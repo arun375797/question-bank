@@ -1,0 +1,14 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "questionbank-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-02-14",
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "questionbank_db",
+      "database_id": "0cdf3326-7688-4e1e-91f0-ecc42362aee3",
+    },
+  ],
+}

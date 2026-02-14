@@ -104,3 +104,25 @@ npm run dev
 ## Question Numbering
 
 Uses a `Counter` collection with atomic `findOneAndUpdate` + `$inc` for safe per-language numbering. Deleted questions do **not** cause renumbering.
+
+
+
+PS D:\Domain Question Bank\workers-api> npx wrangler d1 create questionbank_db
+>>
+
+ ⛅️ wrangler 4.65.0
+───────────────────
+✅ Successfully created DB 'questionbank_db' in region APAC
+Created your new D1 database.
+
+To access your new D1 Database in your Worker, add the following snippet to your configuration file:
+{
+  "d1_databases": [
+    {
+      "binding": "questionbank_db",
+      "database_name": "questionbank_db",
+      "database_id": "0cdf3326-7688-4e1e-91f0-ecc42362aee3"
+    }
+  ]
+}
+? Would you like Wrangler to add it on your behalf? » (Y/n)
