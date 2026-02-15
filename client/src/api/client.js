@@ -1,5 +1,7 @@
 import axios from "axios";
 
+const AUTH_STORAGE_KEY = "site_auth_token";
+
 // Production (Vercel): use relative "/api" so vercel.json rewrites to your backend.
 // Avoid mixed content: on HTTPS, never use VITE_API_BASE starting with "http:".
 const base =
@@ -16,6 +18,32 @@ const api = axios.create({
   headers: { "Content-Type": "application/json" },
   timeout: 10000, // 10 second timeout
 });
+
+let getToken = () =>
+  (typeof window !== "undefined" && window.localStorage?.getItem(AUTH_STORAGE_KEY)) || null;
+let onUnauthorized = () => {};
+
+api.setAuthCallbacks = (cb) => {
+  if (cb.getToken) getToken = cb.getToken;
+  if (cb.onUnauthorized) onUnauthorized = cb.onUnauthorized;
+};
+
+api.interceptors.request.use((config) => {
+  const token = getToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
+
+api.interceptors.response.use(
+  (res) => res,
+  (err) => {
+    if (err.response?.status === 401) {
+      if (typeof window !== "undefined") window.localStorage.removeItem(AUTH_STORAGE_KEY);
+      onUnauthorized();
+    }
+    return Promise.reject(err);
+  }
+);
 
 // Languages
 export const languagesApi = {

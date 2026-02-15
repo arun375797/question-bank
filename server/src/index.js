@@ -5,6 +5,8 @@ const mongoose = require("mongoose");
 
 dotenv.config();
 
+const authMiddleware = require("./middlewares/auth");
+const authRoutes = require("./routes/auth.routes");
 const languageRoutes = require("./routes/language.routes");
 const topicRoutes = require("./routes/topic.routes");
 const subtopicRoutes = require("./routes/subtopic.routes");
@@ -29,16 +31,17 @@ app.use(cors({
 }));
 app.use(express.json({ limit: "10mb" }));
 
-// Routes
+// Routes (health and auth are public; rest require auth)
 app.get("/api/health", (req, res) => {
   res.json({ success: true, message: "Domain Question Bank API is running" });
 });
+app.use("/api/auth", authRoutes);
 
-app.use("/api/languages", languageRoutes);
-app.use("/api/topics", topicRoutes);
-app.use("/api/subtopics", subtopicRoutes);
-app.use("/api/questions", questionRoutes);
-app.use("/api/todo", todoRoutes);
+app.use("/api/languages", authMiddleware, languageRoutes);
+app.use("/api/topics", authMiddleware, topicRoutes);
+app.use("/api/subtopics", authMiddleware, subtopicRoutes);
+app.use("/api/questions", authMiddleware, questionRoutes);
+app.use("/api/todo", authMiddleware, todoRoutes);
 
 // Error handling
 app.use(notFoundHandler);
