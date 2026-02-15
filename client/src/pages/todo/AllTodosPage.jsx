@@ -11,7 +11,7 @@ import {
   Check,
   Circle,
 } from "lucide-react";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 import TodoModal from "./TodoModal";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import toast from "react-hot-toast";

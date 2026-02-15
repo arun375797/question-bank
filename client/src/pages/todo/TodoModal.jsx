@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Plus, Trash2 } from "lucide-react";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 import Modal from "../../components/Modal";
 import toast from "react-hot-toast";
 

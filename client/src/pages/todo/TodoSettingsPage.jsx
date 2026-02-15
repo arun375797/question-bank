@@ -10,7 +10,7 @@ import {
   Check,
 } from "lucide-react";
 import { useTheme, THEMES } from "../../hooks/useTheme";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 import toast from "react-hot-toast";
 
 const TODO_THEMES = [

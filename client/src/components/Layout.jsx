@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../hooks/useTheme";
-import { useTodo } from "../context/TodoContext";
+import { useTodo } from "../context/todoContext";
 import { Toaster } from "react-hot-toast";
 import {
   Home,

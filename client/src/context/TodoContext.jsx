@@ -1,10 +1,5 @@
-import {
-  createContext,
-  useContext,
-  useCallback,
-  useEffect,
-  useState,
-} from "react";
+import { useCallback, useEffect, useState } from "react";
+import { TodoContext } from "./todoContext";
 import { todoApi } from "../api/client";
 
 const STORAGE_KEYS = {
@@ -59,17 +54,19 @@ function load(key, fallback) {
   try {
     const raw = localStorage.getItem(key);
     if (raw) return JSON.parse(raw);
-  } catch (_) {}
+  } catch {
+    // ignore
+  }
   return fallback;
 }
 
 function save(key, value) {
   try {
     localStorage.setItem(key, JSON.stringify(value));
-  } catch (_) {}
+  } catch {
+    // ignore
+  }
 }
-
-const TodoContext = createContext(null);
 
 export function TodoProvider({ children }) {
   const [rules, setRulesState] = useState([]);
@@ -101,6 +98,10 @@ export function TodoProvider({ children }) {
   useEffect(() => {
     let cancelled = false;
 
+    function safeArray(value) {
+      return Array.isArray(value) ? value : [];
+    }
+
     async function loadFromApi() {
       try {
         const [rulesRes, todosRes] = await Promise.all([
@@ -108,35 +109,39 @@ export function TodoProvider({ children }) {
           todoApi.getTodos(),
         ]);
         if (cancelled) return;
-        const rulesList = rulesRes?.data ?? [];
-        const todosList = todosRes?.data ?? [];
+        const rulesList = safeArray(rulesRes?.data);
+        const todosList = safeArray(todosRes?.data);
         const hasSeeded = load(STORAGE_KEYS.hasSeeded, false);
 
         if (rulesList.length === 0 && todosList.length === 0 && !hasSeeded) {
-          for (const r of DEMO_RULES) {
-            await todoApi.createRule(r);
+          try {
+            for (const r of DEMO_RULES) {
+              await todoApi.createRule(r);
+            }
+            for (const t of DEMO_TODOS) {
+              await todoApi.createTodo(t);
+            }
+            save(STORAGE_KEYS.hasSeeded, true);
+            const [rulesRes2, todosRes2] = await Promise.all([
+              todoApi.getRules(),
+              todoApi.getTodos(),
+            ]);
+            if (cancelled) return;
+            setRulesState(safeArray(rulesRes2?.data));
+            setTodosState(safeArray(todosRes2?.data));
+          } catch {
+            if (cancelled) return;
+            setRulesState([]);
+            setTodosState([]);
           }
-          for (const t of DEMO_TODOS) {
-            await todoApi.createTodo(t);
-          }
-          save(STORAGE_KEYS.hasSeeded, true);
-          const [rulesRes2, todosRes2] = await Promise.all([
-            todoApi.getRules(),
-            todoApi.getTodos(),
-          ]);
-          if (cancelled) return;
-          setRulesState(rulesRes2?.data ?? []);
-          setTodosState(todosRes2?.data ?? []);
         } else {
           setRulesState(rulesList);
           setTodosState(todosList);
         }
-      } catch (_) {
+      } catch {
         if (cancelled) return;
-        const storedRules = load("qb-todo-rules", []);
-        const storedTodos = load("qb-todo-todos", []);
-        setRulesState(storedRules);
-        setTodosState(storedTodos);
+        setRulesState(safeArray(load("qb-todo-rules", [])));
+        setTodosState(safeArray(load("qb-todo-todos", [])));
       } finally {
         if (!cancelled) setLoading(false);
       }
@@ -168,38 +173,26 @@ export function TodoProvider({ children }) {
   }, []);
 
   const addRule = useCallback(async (text) => {
-    try {
-      const order = rules.length;
-      const res = await todoApi.createRule({ text, order });
-      const created = res?.data;
-      if (created) setRulesState((prev) => [...prev, created]);
-      return created?.id;
-    } catch (err) {
-      throw err;
-    }
+    const order = rules.length;
+    const res = await todoApi.createRule({ text, order });
+    const created = res?.data;
+    if (created) setRulesState((prev) => [...prev, created]);
+    return created?.id;
   }, [rules.length]);
 
   const updateRule = useCallback(async (id, text) => {
-    try {
-      const res = await todoApi.updateRule(id, { text });
-      const updated = res?.data;
-      if (updated) {
-        setRulesState((prev) =>
-          prev.map((r) => (r.id === id ? { ...r, text: updated.text } : r))
-        );
-      }
-    } catch (err) {
-      throw err;
+    const res = await todoApi.updateRule(id, { text });
+    const updated = res?.data;
+    if (updated) {
+      setRulesState((prev) =>
+        prev.map((r) => (r.id === id ? { ...r, text: updated.text } : r))
+      );
     }
   }, []);
 
   const deleteRule = useCallback(async (id) => {
-    try {
-      await todoApi.deleteRule(id);
-      setRulesState((prev) => prev.filter((r) => r.id !== id));
-    } catch (err) {
-      throw err;
-    }
+    await todoApi.deleteRule(id);
+    setRulesState((prev) => prev.filter((r) => r.id !== id));
   }, []);
 
   const reorderRules = useCallback(async (fromIndex, toIndex) => {
@@ -207,73 +200,53 @@ export function TodoProvider({ children }) {
     const [removed] = sorted.splice(fromIndex, 1);
     sorted.splice(toIndex, 0, removed);
     const order = sorted.map((r) => r.id);
-    try {
-      const res = await todoApi.reorderRules(order);
-      const data = res?.data;
-      if (data) setRulesState(data);
-    } catch (err) {
-      throw err;
-    }
+    const res = await todoApi.reorderRules(order);
+    const data = res?.data;
+    if (Array.isArray(data)) setRulesState(data);
   }, [rules]);
 
   const addTodo = useCallback(async (todo) => {
-    try {
-      const payload = {
-        title: todo.title || "Untitled",
-        priority: todo.priority ?? "P4",
-        colorLabel: todo.colorLabel ?? null,
-        dueDate: todo.dueDate ?? null,
-        dueTime: todo.dueTime ?? null,
-        notes: todo.notes ?? "",
-        links: Array.isArray(todo.links) ? todo.links : [],
-        subtasks: Array.isArray(todo.subtasks) ? todo.subtasks : [],
-        completed: false,
-      };
-      const res = await todoApi.createTodo(payload);
-      const created = res?.data;
-      if (created) setTodosState((prev) => [...prev, created]);
-      return created?.id;
-    } catch (err) {
-      throw err;
-    }
+    const payload = {
+      title: todo.title || "Untitled",
+      priority: todo.priority ?? "P4",
+      colorLabel: todo.colorLabel ?? null,
+      dueDate: todo.dueDate ?? null,
+      dueTime: todo.dueTime ?? null,
+      notes: todo.notes ?? "",
+      links: Array.isArray(todo.links) ? todo.links : [],
+      subtasks: Array.isArray(todo.subtasks) ? todo.subtasks : [],
+      completed: false,
+    };
+    const res = await todoApi.createTodo(payload);
+    const created = res?.data;
+    if (created) setTodosState((prev) => [...prev, created]);
+    return created?.id;
   }, []);
 
   const updateTodo = useCallback(async (id, updates) => {
-    try {
-      const res = await todoApi.updateTodo(id, updates);
-      const updated = res?.data;
-      if (updated) {
-        setTodosState((prev) =>
-          prev.map((t) => (t.id === id ? { ...t, ...updated } : t))
-        );
-      }
-    } catch (err) {
-      throw err;
+    const res = await todoApi.updateTodo(id, updates);
+    const updated = res?.data;
+    if (updated) {
+      setTodosState((prev) =>
+        prev.map((t) => (t.id === id ? { ...t, ...updated } : t))
+      );
     }
   }, []);
 
   const deleteTodo = useCallback(async (id) => {
-    try {
-      await todoApi.deleteTodo(id);
-      setTodosState((prev) => prev.filter((t) => t.id !== id));
-    } catch (err) {
-      throw err;
-    }
+    await todoApi.deleteTodo(id);
+    setTodosState((prev) => prev.filter((t) => t.id !== id));
   }, []);
 
   const toggleTodoComplete = useCallback(async (id) => {
     const todo = todos.find((t) => t.id === id);
     if (!todo) return;
-    try {
-      await todoApi.updateTodo(id, { completed: !todo.completed });
-      setTodosState((prev) =>
-        prev.map((t) =>
-          t.id === id ? { ...t, completed: !t.completed } : t
-        )
-      );
-    } catch (err) {
-      throw err;
-    }
+    await todoApi.updateTodo(id, { completed: !todo.completed });
+    setTodosState((prev) =>
+      prev.map((t) =>
+        t.id === id ? { ...t, completed: !t.completed } : t
+      )
+    );
   }, [todos]);
 
   const sortedRules = [...rules].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -302,10 +275,4 @@ export function TodoProvider({ children }) {
       {children}
     </TodoContext.Provider>
   );
-}
-
-export function useTodo() {
-  const ctx = useContext(TodoContext);
-  if (!ctx) throw new Error("useTodo must be used within TodoProvider");
-  return ctx;
 }

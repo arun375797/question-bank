@@ -14,7 +14,7 @@ import {
   parseISO,
 } from "date-fns";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 
 function getDaysInMonthView(date) {
   const start = startOfWeek(startOfMonth(date), { weekStartsOn: 1 });

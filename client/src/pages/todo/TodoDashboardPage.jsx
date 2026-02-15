@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { format } from "date-fns";
 import { Link } from "react-router-dom";
 import { ListTodo, ChevronRight } from "lucide-react";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 import DailyRules from "./DailyRules";
 
 function getGreeting() {

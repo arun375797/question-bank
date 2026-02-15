@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Play, Pause, RotateCcw, Target } from "lucide-react";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 import confetti from "canvas-confetti";
 import toast from "react-hot-toast";
 

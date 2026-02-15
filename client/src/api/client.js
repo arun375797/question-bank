@@ -1,14 +1,14 @@
 import axios from "axios";
 
-// Avoid mixed content: on HTTPS (e.g. Vercel), never call an HTTP API directly.
-// Use relative /api so Vercel rewrites proxy to the backend.
+// Production (Vercel): use relative "/api" so vercel.json rewrites to your backend.
+// Avoid mixed content: on HTTPS, never use VITE_API_BASE starting with "http:".
 const base =
   typeof window !== "undefined" &&
   window.location?.protocol === "https:" &&
   import.meta.env.VITE_API_BASE?.startsWith?.("http:")
     ? "/api"
     : import.meta.env.VITE_API_BASE
-      ? `${import.meta.env.VITE_API_BASE}/api`
+      ? `${import.meta.env.VITE_API_BASE.replace(/\/api\/?$/, "")}/api`
       : "/api";
 
 const api = axios.create({

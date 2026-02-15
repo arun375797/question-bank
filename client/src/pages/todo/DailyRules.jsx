@@ -16,7 +16,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import { GripVertical, Plus, Trash2 } from "lucide-react";
-import { useTodo } from "../../context/TodoContext";
+import { useTodo } from "../../context/todoContext";
 import toast from "react-hot-toast";
 
 function RuleRow({ id, text, onEdit, onDelete, isEditing, onStartEdit, onSaveEdit }) {
