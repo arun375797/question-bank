@@ -40,10 +40,7 @@ export default function Modal({
                 <X size={18} />
               </button>
             </div>
-            <div
-              className="modal-body"
-              style={{ overflowY: "auto", maxHeight: "70vh" }}
-            >
+            <div className="modal-body">
               {children}
             </div>
           </motion.div>

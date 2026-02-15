@@ -317,7 +317,7 @@ export default function Layout() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              className="pb-16 lg:pb-0"
+              className="main-content-pad lg:pb-0"
             >
               <Outlet />
             </motion.div>
