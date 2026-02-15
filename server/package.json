@@ -6,7 +6,9 @@
   "scripts": {
     "dev": "nodemon src/index.js",
     "start": "node src/index.js",
-    "seed": "node src/seed.js"
+    "seed": "node src/seed.js",
+    "docker:build": "docker build -t question-bank-api .",
+    "docker:run": "docker run -p 5000:5000 --env-file .env question-bank-api"
   },
   "dependencies": {
     "cors": "^2.8.5",

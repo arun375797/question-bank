@@ -105,24 +105,35 @@ npm run dev
 
 Uses a `Counter` collection with atomic `findOneAndUpdate` + `$inc` for safe per-language numbering. Deleted questions do **not** cause renumbering.
 
+## Deployment
 
+### Frontend (Vercel)
 
-PS D:\Domain Question Bank\workers-api> npx wrangler d1 create questionbank_db
->>
+The frontend is configured for deployment on Vercel:
 
- ⛅️ wrangler 4.65.0
-───────────────────
-✅ Successfully created DB 'questionbank_db' in region APAC
-Created your new D1 database.
+1. **Set Environment Variables** in Vercel:
+   - `VITE_API_BASE` - Your AWS backend API URL (e.g., `https://api.yourdomain.com` or `https://your-eb-url.elasticbeanstalk.com`)
 
-To access your new D1 Database in your Worker, add the following snippet to your configuration file:
-{
-  "d1_databases": [
-    {
-      "binding": "questionbank_db",
-      "database_name": "questionbank_db",
-      "database_id": "0cdf3326-7688-4e1e-91f0-ecc42362aee3"
-    }
-  ]
-}
-? Would you like Wrangler to add it on your behalf? » (Y/n)
+2. **Install Dependencies**:
+   ```bash
+   cd client
+   npm install
+   ```
+
+3. **Deploy**: Push to your repository and Vercel will automatically deploy.
+
+### Backend (AWS)
+
+The backend is configured for deployment on AWS. See `server/AWS_DEPLOYMENT.md` for detailed instructions.
+
+**Quick Start Options:**
+- **Elastic Beanstalk** (Easiest) - See AWS_DEPLOYMENT.md Option 1
+- **ECS with Fargate** (Containerized) - See AWS_DEPLOYMENT.md Option 2
+- **EC2** (Traditional) - See AWS_DEPLOYMENT.md Option 3
+
+**Required Environment Variables:**
+- `MONGODB_URI` - Your MongoDB connection string
+- `NODE_ENV` - Set to `production`
+- `PORT` - Port number (default: 5000)
+
+After deploying the backend to AWS, update the frontend's `VITE_API_BASE` environment variable in Vercel to point to your AWS API URL.
