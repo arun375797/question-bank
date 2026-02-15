@@ -5,6 +5,7 @@ import { Link } from "react-router-dom";
 import { ListTodo, ChevronRight } from "lucide-react";
 import { useTodo } from "../../context/todoContext";
 import DailyRules from "./DailyRules";
+import { getPriorityLabel } from "../../utils/todoPriorities";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -181,7 +182,7 @@ export default function TodoDashboardPage() {
                           color: "var(--text-secondary)",
                         }}
                       >
-                        {todo.priority}
+                        {getPriorityLabel(todo.priority)}
                       </span>
                     )}
                     {todo.dueTime && (

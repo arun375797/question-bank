@@ -3,10 +3,9 @@ import { Plus, Trash2 } from "lucide-react";
 import { useTodo } from "../../context/todoContext";
 import Modal from "../../components/Modal";
 import toast from "react-hot-toast";
+import { PRIORITY_OPTIONS } from "../../utils/todoPriorities";
 
-const PRIORITIES = ["P1", "P2", "P3", "P4"];
-
-export default function TodoModal({ isOpen, onClose, todo: initialTodo, onSuccess }) {
+export default function TodoModal({ isOpen, onClose, todo: initialTodo, initialDueDate, onSuccess }) {
   const { addTodo, updateTodo, LABEL_COLORS } = useTodo();
   const [title, setTitle] = useState("");
   const [priority, setPriority] = useState("P4");
@@ -37,13 +36,13 @@ export default function TodoModal({ isOpen, onClose, todo: initialTodo, onSucces
       setTitle("");
       setPriority("P4");
       setColorLabel(null);
-      setDueDate("");
+      setDueDate(initialDueDate || "");
       setDueTime("");
       setNotes("");
       setLinks([]);
       setSubtasks([]);
     }
-  }, [initialTodo, isOpen]);
+  }, [initialTodo, initialDueDate, isOpen]);
 
   const addLink = () => {
     setLinks((prev) => [...prev, { label: "", url: "" }]);
@@ -135,9 +134,9 @@ export default function TodoModal({ isOpen, onClose, todo: initialTodo, onSucces
               value={priority}
               onChange={(e) => setPriority(e.target.value)}
             >
-              {PRIORITIES.map((p) => (
-                <option key={p} value={p}>
-                  {p}
+              {PRIORITY_OPTIONS.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
                 </option>
               ))}
             </select>

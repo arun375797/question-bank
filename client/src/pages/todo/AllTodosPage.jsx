@@ -15,15 +15,13 @@ import { useTodo } from "../../context/todoContext";
 import TodoModal from "./TodoModal";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import toast from "react-hot-toast";
+import { PRIORITY_OPTIONS, priorityOrder, getPriorityLabel } from "../../utils/todoPriorities";
 
-const PRIORITIES = ["P1", "P2", "P3", "P4"];
 const SORT_OPTIONS = [
   { value: "dueDate", label: "Due date" },
   { value: "priority", label: "Priority" },
   { value: "created", label: "Created" },
 ];
-
-const priorityOrder = { P1: 0, P2: 1, P3: 2, P4: 3 };
 
 export default function AllTodosPage() {
   const { todos, loading, updateTodo, deleteTodo, toggleTodoComplete } = useTodo();
@@ -169,8 +167,8 @@ export default function AllTodosPage() {
             onChange={(e) => setFilterPriority(e.target.value)}
           >
             <option value="">All priorities</option>
-            {PRIORITIES.map((p) => (
-              <option key={p} value={p}>{p}</option>
+            {PRIORITY_OPTIONS.map((o) => (
+              <option key={o.value} value={o.value}>{o.label}</option>
             ))}
           </select>
           <select
@@ -236,7 +234,7 @@ export default function AllTodosPage() {
                             color: "var(--text-secondary)",
                           }}
                         >
-                          {todo.priority}
+                          {getPriorityLabel(todo.priority)}
                         </span>
                       )}
                       {isOverdue(todo) && (
