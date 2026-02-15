@@ -23,6 +23,4 @@ const languageSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-languageSchema.index({ slug: 1 });
-
 module.exports = mongoose.model("Language", languageSchema);
