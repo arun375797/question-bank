@@ -4,7 +4,6 @@ import { todoApi } from "../api/client";
 
 const STORAGE_KEYS = {
   settings: "qb-todo-settings",
-  hasSeeded: "qb-todo-has-seeded",
 };
 
 const LABEL_COLORS = [
@@ -14,40 +13,6 @@ const LABEL_COLORS = [
   "#3b82f6",
   "#8b5cf6",
   "#ec4899",
-];
-
-const DEMO_RULES = [
-  { text: "Review top 3 priorities before starting work", order: 0 },
-  { text: "No social media before noon", order: 1 },
-  { text: "One deep focus block of 25+ minutes daily", order: 2 },
-];
-
-const DEMO_TODOS = [
-  {
-    title: "Complete project proposal",
-    priority: "P1",
-    colorLabel: "#ef4444",
-    dueDate: new Date().toISOString().slice(0, 10),
-    dueTime: "17:00",
-    notes: "Send to team for review.",
-    links: [{ label: "Doc", url: "https://example.com/doc" }],
-    subtasks: [
-      { id: "s1", text: "Outline sections", done: true },
-      { id: "s2", text: "Draft intro", done: false },
-    ],
-    completed: false,
-  },
-  {
-    title: "Daily standup",
-    priority: "P2",
-    colorLabel: "#3b82f6",
-    dueDate: new Date().toISOString().slice(0, 10),
-    dueTime: "09:30",
-    notes: "",
-    links: [],
-    subtasks: [],
-    completed: false,
-  },
 ];
 
 function load(key, fallback) {
@@ -111,33 +76,8 @@ export function TodoProvider({ children }) {
         if (cancelled) return;
         const rulesList = safeArray(rulesRes?.data);
         const todosList = safeArray(todosRes?.data);
-        const hasSeeded = load(STORAGE_KEYS.hasSeeded, false);
-
-        if (rulesList.length === 0 && todosList.length === 0 && !hasSeeded) {
-          try {
-            for (const r of DEMO_RULES) {
-              await todoApi.createRule(r);
-            }
-            for (const t of DEMO_TODOS) {
-              await todoApi.createTodo(t);
-            }
-            save(STORAGE_KEYS.hasSeeded, true);
-            const [rulesRes2, todosRes2] = await Promise.all([
-              todoApi.getRules(),
-              todoApi.getTodos(),
-            ]);
-            if (cancelled) return;
-            setRulesState(safeArray(rulesRes2?.data));
-            setTodosState(safeArray(todosRes2?.data));
-          } catch {
-            if (cancelled) return;
-            setRulesState([]);
-            setTodosState([]);
-          }
-        } else {
-          setRulesState(rulesList);
-          setTodosState(todosList);
-        }
+        setRulesState(rulesList);
+        setTodosState(todosList);
       } catch {
         if (cancelled) return;
         setRulesState(safeArray(load("qb-todo-rules", [])));
