@@ -5,6 +5,7 @@ const api = axios.create({
     ? `${import.meta.env.VITE_API_BASE}/api`
     : "/api",
   headers: { "Content-Type": "application/json" },
+  timeout: 10000, // 10 second timeout
 });
 
 // Languages
