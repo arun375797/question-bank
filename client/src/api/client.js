@@ -56,4 +56,17 @@ export const questionsApi = {
   bulk: (data) => api.post("/questions/bulk", data).then((r) => r.data),
 };
 
+// Todo app: rules and todos (persisted in DB)
+export const todoApi = {
+  getRules: () => api.get("/todo/rules").then((r) => r.data),
+  createRule: (data) => api.post("/todo/rules", data).then((r) => r.data),
+  updateRule: (id, data) => api.put(`/todo/rules/${id}`, data).then((r) => r.data),
+  reorderRules: (order) => api.put("/todo/rules/reorder", { order }).then((r) => r.data),
+  deleteRule: (id) => api.delete(`/todo/rules/${id}`).then((r) => r.data),
+  getTodos: () => api.get("/todo/todos").then((r) => r.data),
+  createTodo: (data) => api.post("/todo/todos", data).then((r) => r.data),
+  updateTodo: (id, data) => api.put(`/todo/todos/${id}`, data).then((r) => r.data),
+  deleteTodo: (id) => api.delete(`/todo/todos/${id}`).then((r) => r.data),
+};
+
 export default api;

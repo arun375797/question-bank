@@ -62,8 +62,8 @@ export default function ConfirmDialog({
               </button>
               <button
                 className={`btn ${danger ? "btn-danger" : "btn-primary"}`}
-                onClick={() => {
-                  onConfirm();
+                onClick={async () => {
+                  await onConfirm?.();
                   onClose();
                 }}
               >

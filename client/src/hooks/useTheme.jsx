@@ -8,6 +8,12 @@ export const THEMES = [
     preview: { bg: "#0f172a", card: "#1e293b", accent: "#6366f1" },
   },
   {
+    id: "calm",
+    name: "Calm",
+    description: "Soft purple, relaxed",
+    preview: { bg: "#1e1b2e", card: "#2d2a3e", accent: "#a78bfa" },
+  },
+  {
     id: "ocean",
     name: "Ocean",
     description: "Cool blue depth",

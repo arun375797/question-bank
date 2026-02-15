@@ -9,6 +9,7 @@ const languageRoutes = require("./routes/language.routes");
 const topicRoutes = require("./routes/topic.routes");
 const subtopicRoutes = require("./routes/subtopic.routes");
 const questionRoutes = require("./routes/question.routes");
+const todoRoutes = require("./routes/todo.routes");
 const { errorHandler, notFoundHandler } = require("./middlewares/errorHandler");
 
 const app = express();
@@ -37,6 +38,7 @@ app.use("/api/languages", languageRoutes);
 app.use("/api/topics", topicRoutes);
 app.use("/api/subtopics", subtopicRoutes);
 app.use("/api/questions", questionRoutes);
+app.use("/api/todo", todoRoutes);
 
 // Error handling
 app.use(notFoundHandler);

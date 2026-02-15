@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../hooks/useTheme";
+import { useTodo } from "../context/TodoContext";
 import { Toaster } from "react-hot-toast";
 import {
   Home,
@@ -14,6 +15,11 @@ import {
   Wrench,
   LayoutList,
   BookText,
+  LayoutDashboard,
+  ListTodo,
+  Calendar,
+  Timer,
+  Download,
 } from "lucide-react";
 
 const navLinks = [
@@ -25,28 +31,76 @@ const navLinks = [
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
+const todoNavLinks = [
+  { to: "/todo", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/todo/list", label: "All Todos", icon: ListTodo },
+  { to: "/todo/calendar", label: "Calendar", icon: Calendar },
+  { to: "/todo/focus", label: "Focus Timer", icon: Timer },
+  { to: "/todo/settings", label: "Settings", icon: Settings },
+  { to: "/todo/install", label: "Install App", icon: Download },
+];
+
 // Fewer items for the mobile bottom nav to avoid cramping
 const mobileNavLinks = [
   { to: "/", label: "Home", icon: Home },
   { to: "/study", label: "Study", icon: BookOpen },
-  { to: "/notebook", label: "Notebook", icon: BookText },
+  { to: "/todo", label: "TODO", icon: ListTodo },
   { to: "/manage", label: "Manage", icon: Wrench },
   { to: "/settings", label: "Settings", icon: Settings },
 ];
 
 export default function Layout() {
   const { theme, isDark } = useTheme();
+  const { settings: todoSettings } = useTodo();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+
+  useEffect(() => {
+    const font = todoSettings?.font || "Inter";
+    document.documentElement.style.setProperty(
+      "--font-sans",
+      `"${font}", system-ui, -apple-system, sans-serif`
+    );
+    if (todoSettings?.textColorOverride) {
+      document.documentElement.style.setProperty("--text-primary", todoSettings.textColorOverride);
+    } else {
+      document.documentElement.style.removeProperty("--text-primary");
+    }
+  }, [todoSettings?.font, todoSettings?.textColorOverride]);
 
   const isActive = (to) =>
     to === "/" ? location.pathname === "/" : location.pathname.startsWith(to);
 
+  const bgImage = todoSettings?.backgroundImage;
+  const overlayDim = todoSettings?.overlayDim ?? 0;
+  const overlayBlur = todoSettings?.overlayBlur ?? 0;
+
   return (
     <div
-      className="flex h-screen overflow-hidden"
+      className="flex h-screen overflow-hidden relative"
       style={{ background: "var(--bg)" }}
     >
+      {bgImage && (
+        <div
+          className="absolute inset-0 pointer-events-none z-0"
+          style={{
+            backgroundImage: `url(${bgImage})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+      )}
+      {bgImage && (
+        <div
+          className="absolute inset-0 pointer-events-none z-1"
+          style={{
+            backgroundColor: `rgba(0,0,0,${overlayDim})`,
+            backdropFilter: `blur(${overlayBlur}px)`,
+            WebkitBackdropFilter: `blur(${overlayBlur}px)`,
+          }}
+        />
+      )}
+      <div className="relative z-10 flex flex-1 min-w-0 h-screen overflow-hidden" style={{ flex: 1 }}>
       {/* Mobile overlay */}
       <AnimatePresence>
         {sidebarOpen && (
@@ -61,12 +115,14 @@ export default function Layout() {
         )}
       </AnimatePresence>
 
-      {/* Sidebar - hidden on mobile, shown on desktop */}
+      {/* Sidebar - hidden on mobile, shown on desktop; glassmorphism on desktop */}
       <aside
-        className={`fixed inset-y-0 left-0 z-40 w-64 flex-col transition-transform duration-200 lg:static lg:translate-x-0 hidden lg:flex`}
+        className={`fixed inset-y-0 left-0 z-40 w-64 flex flex-col transition-transform duration-200 lg:static lg:translate-x-0 hidden lg:flex`}
         style={{
           background: "var(--bg-sidebar)",
           borderRight: "1px solid var(--border)",
+          backdropFilter: "blur(12px)",
+          WebkitBackdropFilter: "blur(12px)",
         }}
       >
         {/* Logo */}
@@ -94,7 +150,7 @@ export default function Layout() {
         </div>
 
         {/* Navigation */}
-        <nav className="flex-1 px-3 py-4 space-y-1">
+        <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-1">
           {navLinks.map(({ to, label, icon: Icon }) => {
             const active = isActive(to);
             return (
@@ -116,6 +172,42 @@ export default function Layout() {
               </NavLink>
             );
           })}
+
+          {/* TODO section */}
+          <div
+            className="pt-4 mt-2"
+            style={{ borderTop: "1px solid var(--border)" }}
+          >
+            <p
+              className="px-3 py-1.5 text-xs font-semibold uppercase tracking-wider"
+              style={{ color: "var(--text-muted)" }}
+            >
+              TODO
+            </p>
+            <div className="space-y-1 pt-1">
+              {todoNavLinks.map(({ to, label, icon: Icon }) => {
+                const active = isActive(to) || (to === "/todo" && location.pathname === "/todo");
+                return (
+                  <NavLink
+                    key={to}
+                    to={to}
+                    className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors"
+                    style={{
+                      background: active
+                        ? "var(--accent-soft, var(--color-primary-50))"
+                        : "transparent",
+                      color: active
+                        ? "var(--accent, var(--color-primary-700))"
+                        : "var(--text-secondary)",
+                    }}
+                  >
+                    <Icon size={18} />
+                    {label}
+                  </NavLink>
+                );
+              })}
+            </div>
+          </div>
         </nav>
 
         {/* Current theme label */}
@@ -184,6 +276,35 @@ export default function Layout() {
           </Link>
         </header>
 
+        {/* TODO sub-nav on mobile when inside /todo */}
+        {location.pathname.startsWith("/todo") && (
+          <div
+            className="lg:hidden flex gap-1 px-2 py-2 overflow-x-auto shrink-0"
+            style={{
+              borderBottom: "1px solid var(--border)",
+              background: "var(--bg-card)",
+            }}
+          >
+            {todoNavLinks.map(({ to, label }) => {
+              const active = to === "/todo" ? location.pathname === "/todo" : location.pathname.startsWith(to);
+              return (
+                <NavLink
+                  key={to}
+                  to={to}
+                  className="shrink-0 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors"
+                  style={{
+                    background: active ? "var(--accent-soft)" : "transparent",
+                    color: active ? "var(--accent)" : "var(--text-secondary)",
+                    textDecoration: "none",
+                  }}
+                >
+                  {label}
+                </NavLink>
+              );
+            })}
+          </div>
+        )}
+
         {/* Page content */}
         <main
           className="flex-1 overflow-y-auto"
@@ -196,13 +317,13 @@ export default function Layout() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.2 }}
-              // Add bottom padding on mobile for the bottom nav
               className="pb-16 lg:pb-0"
             >
               <Outlet />
             </motion.div>
           </AnimatePresence>
         </main>
+      </div>
       </div>
 
       {/* ━━━ Mobile Bottom Navigation ━━━ */}

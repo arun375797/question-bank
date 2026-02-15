@@ -1,5 +1,5 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Roboto:wght@400;500;600;700&family=Lora:ital,wght@0,400;0,600;0,700;1,400&family=Space+Mono:wght@400;700&family=Comic+Neue:wght@400;700&display=swap");
 @import "tailwindcss";
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap");
 
 @theme {
   --color-primary-50: #eef2ff;
@@ -140,6 +140,29 @@
   --ring: oklch(from #f472b6 l c h / 0.25);
   --accent: #f472b6;
   --accent-soft: #831843;
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
+  --shadow-md:
+    0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.35);
+  --shadow-lg:
+    0 10px 15px -3px rgb(0 0 0 / 0.45), 0 4px 6px -4px rgb(0 0 0 / 0.35);
+  --shadow-xl:
+    0 20px 25px -5px rgb(0 0 0 / 0.45), 0 8px 10px -6px rgb(0 0 0 / 0.35);
+}
+
+/* Calm — purple soft */
+.calm {
+  --bg: #1e1b2e;
+  --bg-card: #2d2a3e;
+  --bg-elevated: #3a3652;
+  --bg-sidebar: #252238;
+  --text-primary: #e9e6f0;
+  --text-secondary: #a89ec9;
+  --text-muted: #7b7299;
+  --border: #3d3962;
+  --border-focus: #a78bfa;
+  --ring: oklch(from #a78bfa l c h / 0.25);
+  --accent: #a78bfa;
+  --accent-soft: #4c1d95;
   --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.35);
   --shadow-md:
     0 4px 6px -1px rgb(0 0 0 / 0.45), 0 2px 4px -2px rgb(0 0 0 / 0.35);

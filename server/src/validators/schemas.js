@@ -61,6 +61,57 @@ const bulkOperationSchema = z.object({
   value: z.string().optional(), // for updateDifficulty or updateType
 });
 
+// Todo app: Rules
+const createRuleSchema = z.object({
+  text: z.string().min(1, "Rule text is required").max(500),
+  order: z.number().int().min(0).optional().default(0),
+});
+
+const updateRuleSchema = z.object({
+  text: z.string().min(1).max(500).optional(),
+  order: z.number().int().min(0).optional(),
+});
+
+const reorderRulesSchema = z.object({
+  order: z.array(z.string().min(1)).min(1, "At least one rule id is required"),
+});
+
+// Todo app: Todos
+const linkSchema = z.object({
+  label: z.string().max(100).optional().default(""),
+  url: z.string().min(1, "URL is required").max(2000),
+});
+
+const subtaskSchema = z.object({
+  id: z.string().min(1),
+  text: z.string().max(500).optional().default(""),
+  done: z.boolean().optional().default(false),
+});
+
+const createTodoSchema = z.object({
+  title: z.string().max(500).optional().default("Untitled"),
+  priority: z.enum(["P1", "P2", "P3", "P4"]).optional().default("P4"),
+  colorLabel: z.string().max(20).nullable().optional(),
+  dueDate: z.string().max(20).nullable().optional(),
+  dueTime: z.string().max(10).nullable().optional(),
+  notes: z.string().max(5000).optional().default(""),
+  links: z.array(linkSchema).optional().default([]),
+  subtasks: z.array(subtaskSchema).optional().default([]),
+  completed: z.boolean().optional().default(false),
+});
+
+const updateTodoSchema = z.object({
+  title: z.string().max(500).optional(),
+  priority: z.enum(["P1", "P2", "P3", "P4"]).optional(),
+  colorLabel: z.string().max(20).nullable().optional(),
+  dueDate: z.string().max(20).nullable().optional(),
+  dueTime: z.string().max(10).nullable().optional(),
+  notes: z.string().max(5000).optional(),
+  links: z.array(linkSchema).optional(),
+  subtasks: z.array(subtaskSchema).optional(),
+  completed: z.boolean().optional(),
+});
+
 module.exports = {
   createLanguageSchema,
   updateLanguageSchema,
@@ -71,4 +122,9 @@ module.exports = {
   createQuestionSchema,
   updateQuestionSchema,
   bulkOperationSchema,
+  createRuleSchema,
+  updateRuleSchema,
+  reorderRulesSchema,
+  createTodoSchema,
+  updateTodoSchema,
 };

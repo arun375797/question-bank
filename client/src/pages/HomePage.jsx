@@ -67,13 +67,14 @@ export default function HomePage() {
             return (
               <motion.div
                 key={lang._id}
+                className="h-full"
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.06 }}
               >
                 <Link
                   to={`/study/${lang._id}`}
-                  className="card block p-6 transition-all duration-200 hover:shadow-lg group"
+                  className="card p-6 transition-all duration-200 hover:shadow-lg group h-full flex flex-col"
                   style={{ textDecoration: "none" }}
                 >
                   {/* Icon */}
@@ -94,15 +95,13 @@ export default function HomePage() {
                     {lang.name}
                   </h3>
 
-                  {/* Description */}
-                  {lang.description && (
-                    <p
-                      className="text-sm mb-4 line-clamp-2"
-                      style={{ color: "var(--text-secondary)" }}
-                    >
-                      {lang.description}
-                    </p>
-                  )}
+                  {/* Description - min-height keeps card layout consistent */}
+                  <p
+                    className="text-sm mb-4 line-clamp-2 min-h-10"
+                    style={{ color: "var(--text-secondary)" }}
+                  >
+                    {lang.description || "\u00A0"}
+                  </p>
 
                   {/* Stats */}
                   <div className="flex items-center gap-4 mb-3">
@@ -136,9 +135,9 @@ export default function HomePage() {
                     />
                   </div>
 
-                  {/* CTA */}
+                  {/* CTA - mt-auto keeps it at bottom when cards stretch */}
                   <div
-                    className="flex items-center gap-1 text-sm font-medium transition-transform duration-200 group-hover:translate-x-1"
+                    className="flex items-center gap-1 text-sm font-medium transition-transform duration-200 group-hover:translate-x-1 mt-auto"
                     style={{ color: "var(--accent)" }}
                   >
                     Start studying <ArrowRight size={14} />
