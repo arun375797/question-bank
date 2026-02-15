@@ -97,4 +97,16 @@ export const todoApi = {
   deleteTodo: (id) => api.delete(`/todo/todos/${id}`).then((r) => r.data),
 };
 
+// Revision items (spaced repetition, persisted in DB)
+export const revisionApi = {
+  getAll: () => api.get("/todo/revisions").then((r) => r.data),
+  create: (data) => api.post("/todo/revisions", data).then((r) => r.data),
+  update: (id, data) => api.put(`/todo/revisions/${id}`, data).then((r) => r.data),
+  delete: (id) => api.delete(`/todo/revisions/${id}`).then((r) => r.data),
+  markRevised: (id, rating) =>
+    api.post(`/todo/revisions/${id}/mark-revised`, { rating }).then((r) => r.data),
+  snooze: (id, option) =>
+    api.post(`/todo/revisions/${id}/snooze`, { option }).then((r) => r.data),
+};
+
 export default api;

@@ -1,11 +1,14 @@
 import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { format } from "date-fns";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { ListTodo, ChevronRight } from "lucide-react";
 import { useTodo } from "../../context/todoContext";
 import DailyRules from "./DailyRules";
 import { getPriorityLabel } from "../../utils/todoPriorities";
+import ReviseTodayWidget from "../../components/revision/ReviseTodayWidget";
+import RevisionProgressWidget from "../../components/revision/RevisionProgressWidget";
+import RevisionReminderBanner from "../../components/revision/RevisionReminderBanner";
 
 function getGreeting() {
   const hour = new Date().getHours();
@@ -23,8 +26,13 @@ function isOverdue(todo) {
 }
 
 export default function TodoDashboardPage() {
+  const navigate = useNavigate();
   const { todos, loading } = useTodo();
   const greeting = getGreeting();
+
+  const handleStartRevisionSession = (item) => {
+    navigate(`/todo/revise/session/${item.id}`);
+  };
 
   const todayTodos = useMemo(() => {
     const today = format(new Date(), "yyyy-MM-dd");
@@ -69,6 +77,17 @@ export default function TodoDashboardPage() {
         <p className="text-sm mb-6" style={{ color: "var(--text-secondary)" }}>
           {format(new Date(), "EEEE, MMMM d, yyyy")}
         </p>
+
+        {/* Revision reminder */}
+        <div className="mb-4">
+          <RevisionReminderBanner />
+        </div>
+
+        {/* Revise Today widget */}
+        <ReviseTodayWidget onStartSession={handleStartRevisionSession} />
+
+        {/* Revision stats */}
+        <RevisionProgressWidget />
 
         {/* Daily Rules pinned at top */}
         <section className="mb-8">

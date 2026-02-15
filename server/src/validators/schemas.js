@@ -112,6 +112,48 @@ const updateTodoSchema = z.object({
   completed: z.boolean().optional(),
 });
 
+// Revision items (spaced repetition)
+const revisionLinkSchema = z.object({
+  label: z.string().max(200).optional().default(""),
+  url: z.string().min(1).max(2000),
+});
+
+const createRevisionSchema = z.object({
+  title: z.string().max(500).optional().default("Untitled"),
+  notes: z.string().max(10000).optional().default(""),
+  category: z.string().max(50).optional().default("Other"),
+  tags: z.array(z.string().max(100)).optional().default([]),
+  links: z.array(revisionLinkSchema).optional().default([]),
+  nextDueAt: z.string().max(50).optional(),
+  keyQuestions: z.array(z.string().max(500)).optional().default([]),
+  keyPoints: z.array(z.string().max(500)).optional().default([]),
+  mistakesLog: z.string().max(5000).optional().default(""),
+  confidence: z.enum(["low", "medium", "high"]).optional().default("medium"),
+});
+
+const updateRevisionSchema = z.object({
+  title: z.string().max(500).optional(),
+  notes: z.string().max(10000).optional(),
+  category: z.string().max(50).optional(),
+  tags: z.array(z.string().max(100)).optional(),
+  links: z.array(revisionLinkSchema).optional(),
+  nextDueAt: z.string().max(50).optional(),
+  lastRevisedAt: z.string().max(50).optional().nullable(),
+  revisionCount: z.number().int().min(0).optional(),
+  keyQuestions: z.array(z.string().max(500)).optional(),
+  keyPoints: z.array(z.string().max(500)).optional(),
+  mistakesLog: z.string().max(5000).optional(),
+  confidence: z.enum(["low", "medium", "high"]).optional(),
+});
+
+const markRevisedSchema = z.object({
+  rating: z.enum(["easy", "okay", "hard"]),
+});
+
+const snoozeRevisionSchema = z.object({
+  option: z.enum(["1d", "3d", "7d"]),
+});
+
 module.exports = {
   createLanguageSchema,
   updateLanguageSchema,
@@ -127,4 +169,8 @@ module.exports = {
   reorderRulesSchema,
   createTodoSchema,
   updateTodoSchema,
+  createRevisionSchema,
+  updateRevisionSchema,
+  markRevisedSchema,
+  snoozeRevisionSchema,
 };

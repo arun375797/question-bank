@@ -6,12 +6,13 @@ import {
   Plus,
   Pencil,
   Trash2,
-  ChevronDown,
   ExternalLink,
   Check,
   Circle,
+  BookMarked,
 } from "lucide-react";
 import { useTodo } from "../../context/todoContext";
+import { useRevision } from "../../context/revisionContext";
 import TodoModal from "./TodoModal";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import toast from "react-hot-toast";
@@ -25,6 +26,7 @@ const SORT_OPTIONS = [
 
 export default function AllTodosPage() {
   const { todos, loading, updateTodo, deleteTodo, toggleTodoComplete } = useTodo();
+  const { addRevisionItem } = useRevision();
   const [search, setSearch] = useState("");
   const [filterPriority, setFilterPriority] = useState("");
   const [filterStatus, setFilterStatus] = useState("active"); // active | completed | all
@@ -87,6 +89,19 @@ export default function AllTodosPage() {
       await toggleTodoComplete(id);
     } catch (e) {
       toast.error(e.response?.data?.message || "Failed to update todo");
+    }
+  };
+
+  const handleConvertToRevision = async (todo) => {
+    try {
+      await addRevisionItem({
+        title: todo.title || "Untitled",
+        notes: todo.notes || "",
+        links: Array.isArray(todo.links) ? todo.links.filter((l) => l?.url) : [],
+      });
+      toast.success("Todo added to Revision Library. You can edit it there.");
+    } catch (e) {
+      toast.error("Failed to add to Revision Library. Try again.");
     }
   };
 
@@ -288,6 +303,14 @@ export default function AllTodosPage() {
                     )}
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-icon"
+                      onClick={() => handleConvertToRevision(todo)}
+                      title="Convert to Revision Item"
+                    >
+                      <BookMarked size={16} style={{ color: "var(--accent)" }} />
+                    </button>
                     <button
                       type="button"
                       className="btn btn-ghost btn-icon"

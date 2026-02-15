@@ -3,6 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ThemeProvider } from "./hooks/useTheme";
 import { AuthProvider, useAuth } from "./context/AuthContext.jsx";
 import { TodoProvider } from "./context/TodoContext.jsx";
+import { RevisionProvider } from "./context/RevisionContext.jsx";
 import Layout from "./components/Layout";
 import PasswordGatePage from "./pages/PasswordGatePage";
 import HomePage from "./pages/HomePage";
@@ -19,6 +20,9 @@ import TodoCalendarPage from "./pages/todo/TodoCalendarPage";
 import FocusTimerPage from "./pages/todo/FocusTimerPage";
 import TodoSettingsPage from "./pages/todo/TodoSettingsPage";
 import InstallAppPage from "./pages/todo/InstallAppPage";
+import ReviseTodayPage from "./pages/todo/ReviseTodayPage";
+import RevisionLibraryPage from "./pages/todo/RevisionLibraryPage";
+import RevisionSessionPage from "./pages/todo/RevisionSessionPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -66,6 +70,9 @@ function AppContent() {
         <Route path="/todo/list" element={<AllTodosPage />} />
         <Route path="/todo/calendar" element={<TodoCalendarPage />} />
         <Route path="/todo/focus" element={<FocusTimerPage />} />
+        <Route path="/todo/revise" element={<ReviseTodayPage />} />
+        <Route path="/todo/revise/library" element={<RevisionLibraryPage />} />
+        <Route path="/todo/revise/session/:id" element={<RevisionSessionPage />} />
         <Route path="/todo/settings" element={<TodoSettingsPage />} />
         <Route path="/todo/install" element={<InstallAppPage />} />
       </Route>
@@ -79,9 +86,11 @@ export default function App() {
       <ThemeProvider>
         <AuthProvider>
           <TodoProvider>
-            <BrowserRouter>
-              <AppContent />
-            </BrowserRouter>
+            <RevisionProvider>
+              <BrowserRouter>
+                <AppContent />
+              </BrowserRouter>
+            </RevisionProvider>
           </TodoProvider>
         </AuthProvider>
       </ThemeProvider>

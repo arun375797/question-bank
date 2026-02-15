@@ -11,7 +11,9 @@ import {
 } from "lucide-react";
 import { useTheme, THEMES } from "../../hooks/useTheme";
 import { useTodo } from "../../context/todoContext";
+import { useRevision } from "../../context/revisionContext";
 import toast from "react-hot-toast";
+import { BookMarked } from "lucide-react";
 
 const TODO_THEMES = [
   { id: "calm", name: "Calm", desc: "Purple", accent: "#a78bfa" },
@@ -38,6 +40,7 @@ const ALARM_OPTIONS = [
 export default function TodoSettingsPage() {
   const { theme, setTheme } = useTheme();
   const { settings, setSettings } = useTodo();
+  const { settings: revisionSettings, setSettings: setRevisionSettings } = useRevision();
   const [textColor, setTextColor] = useState(settings.textColorOverride || "");
   const fileInputRef = useRef(null);
 
@@ -365,6 +368,60 @@ export default function TodoSettingsPage() {
                   </option>
                 ))}
               </select>
+            </div>
+          </div>
+        </section>
+
+        {/* Revision (spaced repetition) */}
+        <section>
+          <div className="flex items-center gap-2 mb-4">
+            <BookMarked size={20} style={{ color: "var(--accent)" }} />
+            <h2 className="text-lg font-semibold" style={{ color: "var(--text-primary)" }}>
+              Revision
+            </h2>
+          </div>
+          <div className="card p-4 space-y-4">
+            <div>
+              <label className="label">Daily reminder time (in-app banner)</label>
+              <input
+                type="time"
+                className="input w-auto"
+                value={revisionSettings.reminderTime ?? "09:00"}
+                onChange={(e) =>
+                  setRevisionSettings((s) => ({ ...s, reminderTime: e.target.value }))
+                }
+              />
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="revision-sound"
+                className="rounded border-[var(--border)]"
+                checked={revisionSettings.soundOn !== false}
+                onChange={(e) =>
+                  setRevisionSettings((s) => ({ ...s, soundOn: e.target.checked }))
+                }
+              />
+              <label htmlFor="revision-sound" className="label mb-0">
+                Sound for reminders
+              </label>
+            </div>
+            <div className="flex items-center gap-2">
+              <input
+                type="checkbox"
+                id="revision-adaptive"
+                className="rounded border-[var(--border)]"
+                checked={revisionSettings.useAdaptiveScheduling !== false}
+                onChange={(e) =>
+                  setRevisionSettings((s) => ({
+                    ...s,
+                    useAdaptiveScheduling: e.target.checked,
+                  }))
+                }
+              />
+              <label htmlFor="revision-adaptive" className="label mb-0">
+                Adaptive scheduling (Easy → later, Hard → sooner)
+              </label>
             </div>
           </div>
         </section>

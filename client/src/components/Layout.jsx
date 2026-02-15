@@ -20,6 +20,8 @@ import {
   Calendar,
   Timer,
   Download,
+  BookMarked,
+  Library,
 } from "lucide-react";
 
 const navLinks = [
@@ -33,6 +35,8 @@ const navLinks = [
 
 const todoNavLinks = [
   { to: "/todo", label: "Dashboard", icon: LayoutDashboard },
+  { to: "/todo/revise", label: "Revise Today", icon: BookMarked },
+  { to: "/todo/revise/library", label: "Revision Library", icon: Library },
   { to: "/todo/list", label: "All Todos", icon: ListTodo },
   { to: "/todo/calendar", label: "Calendar", icon: Calendar },
   { to: "/todo/focus", label: "Focus Timer", icon: Timer },
@@ -305,12 +309,12 @@ export default function Layout() {
           </div>
         )}
 
-        {/* Page content */}
+       
         <main
           className="flex-1 overflow-y-auto"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
         >
-          <AnimatePresence mode="wait">
+          <AnimatePresence initial={false}>
             <motion.div
               key={location.pathname}
               initial={{ opacity: 0, y: 8 }}
