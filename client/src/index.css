@@ -612,7 +612,7 @@ textarea.input {
 .page-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: 1.5rem;
+  padding: 1rem 1.5rem 1.5rem;
 }
 
 /* ━━━ REDUCED MOTION ━━━ */
@@ -645,7 +645,7 @@ textarea.input {
 /* Smaller padding on very small screens */
 @media (max-width: 640px) {
   .page-container {
-    padding: 1rem;
+    padding: 1rem 1rem 1.5rem;
   }
 
   /* Modal becomes full-width sheet on mobile; keep above bottom nav */
@@ -706,7 +706,7 @@ textarea.input {
 /* Tablet breakpoint */
 @media (min-width: 641px) and (max-width: 1023px) {
   .page-container {
-    padding: 1.25rem;
+    padding: 1rem 1.25rem 1.5rem;
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Link, NavLink, Outlet, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "../hooks/useTheme";
@@ -58,6 +58,26 @@ export default function Layout() {
   const { settings: todoSettings } = useTodo();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
+  const mainRef = useRef(null);
+
+  // Scroll main content to top on route change so content isn't stuck at bottom.
+  // Defer so it runs after React has committed and AnimatePresence has updated the DOM,
+  // and again after a short delay so it sticks after exit animations (avoids top section not showing when navigating back to Dashboard).
+  useEffect(() => {
+    const main = mainRef.current;
+    if (!main) return;
+    const scrollToTop = () => main.scrollTo(0, 0);
+    scrollToTop();
+    let timeoutId;
+    const rafId = requestAnimationFrame(() => {
+      scrollToTop();
+      timeoutId = setTimeout(scrollToTop, 120);
+    });
+    return () => {
+      cancelAnimationFrame(rafId);
+      if (timeoutId != null) clearTimeout(timeoutId);
+    };
+  }, [location.pathname]);
 
   useEffect(() => {
     const font = todoSettings?.font || "Inter";
@@ -311,6 +331,7 @@ export default function Layout() {
 
        
         <main
+          ref={mainRef}
           className="flex-1 overflow-y-auto"
           style={{ paddingBottom: "env(safe-area-inset-bottom, 0)" }}
         >
