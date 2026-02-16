@@ -49,6 +49,7 @@ const createQuestionSchema = z.object({
 });
 
 const updateQuestionSchema = z.object({
+  questionNumber: z.coerce.number().int().min(1, "Question number must be at least 1").optional(),
   topicId: z.string().optional(),
   subtopicId: z.string().nullable().optional(),
   title: z.string().min(1).max(500).optional(),

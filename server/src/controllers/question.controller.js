@@ -176,8 +176,25 @@ exports.create = async (req, res, next) => {
 // PUT /api/questions/:id
 exports.update = async (req, res, next) => {
   try {
-    // Don't allow changing languageId or questionNumber
-    const { languageId, questionNumber, ...updates } = req.body;
+    // Don't allow changing languageId
+    const { languageId, ...updates } = req.body;
+
+    // If questionNumber is being changed, ensure it's unique for this language
+    if (updates.questionNumber != null) {
+      const current = await Question.findById(req.params.id).select("languageId").lean();
+      if (!current) return ApiResponse.notFound(res, "Question not found");
+      const existing = await Question.findOne({
+        languageId: current.languageId,
+        questionNumber: updates.questionNumber,
+        _id: { $ne: req.params.id },
+      });
+      if (existing) {
+        return ApiResponse.badRequest(
+          res,
+          `Question #${updates.questionNumber} already exists for this language. Choose a different number.`,
+        );
+      }
+    }
 
     const question = await Question.findByIdAndUpdate(req.params.id, updates, {
       new: true,

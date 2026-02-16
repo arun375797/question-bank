@@ -825,6 +825,7 @@ function QuestionsTab() {
     languageId: "",
     topicId: "",
     subtopicId: "",
+    questionNumber: "",
     title: "",
     questionText: "",
     answerText: "",
@@ -861,6 +862,7 @@ function QuestionsTab() {
       languageId: item.languageId?._id || item.languageId,
       topicId: item.topicId?._id || item.topicId || "",
       subtopicId: item.subtopicId?._id || item.subtopicId || "",
+      questionNumber: item.questionNumber ?? "",
       title: item.title,
       questionText: item.questionText,
       answerText: item.answerText || "",
@@ -886,6 +888,9 @@ function QuestionsTab() {
     try {
       if (modal.item) {
         const { languageId, ...updateData } = payload;
+        if (form.questionNumber !== "" && form.questionNumber != null) {
+          updateData.questionNumber = Number(form.questionNumber);
+        }
         await updateMut.mutateAsync({ id: modal.item._id, data: updateData });
         toast.success("Question updated");
       } else {
@@ -1237,24 +1242,38 @@ function QuestionsTab() {
             </div>
           )}
           {modal.item && (
-            <div>
-              <label className="label">Topic (optional)</label>
-              <select
-                className="select"
-                value={form.topicId}
-                onChange={(e) => {
-                  setForm({ ...form, topicId: e.target.value, subtopicId: "" });
-                  setFormTopicId(e.target.value);
-                }}
-              >
-                <option value="">None</option>
-                {formTopics.map((t) => (
-                  <option key={t._id} value={t._id}>
-                    {t.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+            <>
+              <div>
+                <label className="label">Question #</label>
+                <input
+                  type="number"
+                  min={1}
+                  className="input"
+                  value={form.questionNumber}
+                  onChange={(e) =>
+                    setForm({ ...form, questionNumber: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label className="label">Topic (optional)</label>
+                <select
+                  className="select"
+                  value={form.topicId}
+                  onChange={(e) => {
+                    setForm({ ...form, topicId: e.target.value, subtopicId: "" });
+                    setFormTopicId(e.target.value);
+                  }}
+                >
+                  <option value="">None</option>
+                  {formTopics.map((t) => (
+                    <option key={t._id} value={t._id}>
+                      {t.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </>
           )}
           {formSubtopics.length > 0 && (
             <div>
