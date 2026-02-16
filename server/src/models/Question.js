@@ -10,7 +10,8 @@ const questionSchema = new mongoose.Schema(
     topicId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Topic",
-      required: [true, "Topic is required"],
+      required: false,
+      default: null,
     },
     subtopicId: {
       type: mongoose.Schema.Types.ObjectId,

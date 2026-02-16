@@ -132,16 +132,34 @@ exports.getById = async (req, res, next) => {
   }
 };
 
+/**
+ * Get the smallest available question number for a language (fills gaps after deletions).
+ */
+async function getNextAvailableQuestionNumber(languageId) {
+  const used = await Question.distinct("questionNumber", { languageId });
+  const usedSet = new Set(used);
+  let n = 1;
+  while (usedSet.has(n)) n++;
+  return n;
+}
+
 // POST /api/questions
 exports.create = async (req, res, next) => {
   try {
     const data = { ...req.body };
 
-    // Auto-assign question number via Counter
-    const questionNumber = await Counter.getNextQuestionNumber(data.languageId);
+    // Assign smallest available question number (reuses gaps after deletions)
+    const questionNumber = await getNextAvailableQuestionNumber(data.languageId);
     data.questionNumber = questionNumber;
 
     const question = await Question.create(data);
+
+    // Keep counter in sync so it never hands out a number we've already used
+    await Counter.findOneAndUpdate(
+      { languageId: data.languageId },
+      [{ $set: { seq: { $max: [{ $ifNull: ["$seq", 0] }, questionNumber] } } }],
+      { upsert: true },
+    );
 
     const populated = await Question.findById(question._id)
       .populate("languageId", "name slug")

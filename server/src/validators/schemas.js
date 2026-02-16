@@ -34,7 +34,11 @@ const updateSubtopicSchema = z.object({
 
 const createQuestionSchema = z.object({
   languageId: z.string().min(1, "Language ID is required"),
-  topicId: z.string().min(1, "Topic ID is required"),
+  topicId: z
+    .union([z.string().min(1), z.literal(""), z.null()])
+    .optional()
+    .transform((v) => (!v ? null : v))
+    .default(null),
   subtopicId: z.string().nullable().optional().default(null),
   title: z.string().min(1, "Title is required").max(500),
   questionText: z.string().min(1, "Question text is required"),

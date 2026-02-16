@@ -876,6 +876,7 @@ function QuestionsTab() {
     e.preventDefault();
     const payload = {
       ...form,
+      topicId: form.topicId || null,
       subtopicId: form.subtopicId || null,
       tags: form.tags
         .split(",")
@@ -1212,7 +1213,7 @@ function QuestionsTab() {
                 </select>
               </div>
               <div>
-                <label className="label">Topic</label>
+                <label className="label">Topic (optional)</label>
                 <select
                   className="select"
                   value={form.topicId}
@@ -1224,9 +1225,8 @@ function QuestionsTab() {
                     });
                     setFormTopicId(e.target.value);
                   }}
-                  required
                 >
-                  <option value="">Select topic</option>
+                  <option value="">None</option>
                   {formTopics.map((t) => (
                     <option key={t._id} value={t._id}>
                       {t.name}
@@ -1238,7 +1238,7 @@ function QuestionsTab() {
           )}
           {modal.item && (
             <div>
-              <label className="label">Topic</label>
+              <label className="label">Topic (optional)</label>
               <select
                 className="select"
                 value={form.topicId}
@@ -1246,9 +1246,8 @@ function QuestionsTab() {
                   setForm({ ...form, topicId: e.target.value, subtopicId: "" });
                   setFormTopicId(e.target.value);
                 }}
-                required
               >
-                <option value="">Select topic</option>
+                <option value="">None</option>
                 {formTopics.map((t) => (
                   <option key={t._id} value={t._id}>
                     {t.name}
