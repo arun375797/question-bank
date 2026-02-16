@@ -15,7 +15,7 @@ import {
 import { ChevronLeft, ChevronRight, Plus, Pencil } from "lucide-react";
 import { useTodo } from "../../context/todoContext";
 import TodoModal from "./TodoModal";
-import { getPriorityLabel } from "../../utils/todoPriorities";
+import { getPriorityLabel, getPriorityColor } from "../../utils/todoPriorities";
 import toast from "react-hot-toast";
 
 function getDaysInMonthView(date) {
@@ -257,8 +257,8 @@ export default function TodoCalendarPage() {
                           <span
                             className="text-xs font-medium px-2 py-0.5 rounded shrink-0"
                             style={{
-                              background: "var(--bg-card)",
-                              color: "var(--text-secondary)",
+                              background: getPriorityColor(t.priority),
+                              color: "white",
                             }}
                           >
                             {getPriorityLabel(t.priority)}

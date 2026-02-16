@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { ListTodo, ChevronRight } from "lucide-react";
 import { useTodo } from "../../context/todoContext";
 import DailyRules from "./DailyRules";
-import { getPriorityLabel } from "../../utils/todoPriorities";
+import { getPriorityLabel, getPriorityColor } from "../../utils/todoPriorities";
 import ReviseTodayWidget from "../../components/revision/ReviseTodayWidget";
 import RevisionProgressWidget from "../../components/revision/RevisionProgressWidget";
 import RevisionReminderBanner from "../../components/revision/RevisionReminderBanner";
@@ -197,8 +197,8 @@ export default function TodoDashboardPage() {
                       <span
                         className="text-xs font-medium px-2 py-0.5 rounded"
                         style={{
-                          background: "var(--bg-elevated)",
-                          color: "var(--text-secondary)",
+                          background: getPriorityColor(todo.priority),
+                          color: "white",
                         }}
                       >
                         {getPriorityLabel(todo.priority)}

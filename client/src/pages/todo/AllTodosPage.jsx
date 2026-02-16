@@ -16,7 +16,7 @@ import { useRevision } from "../../context/revisionContext";
 import TodoModal from "./TodoModal";
 import ConfirmDialog from "../../components/ConfirmDialog";
 import toast from "react-hot-toast";
-import { PRIORITY_OPTIONS, priorityOrder, getPriorityLabel } from "../../utils/todoPriorities";
+import { PRIORITY_OPTIONS, priorityOrder, getPriorityLabel, getPriorityColor } from "../../utils/todoPriorities";
 
 const SORT_OPTIONS = [
   { value: "dueDate", label: "Due date" },
@@ -245,8 +245,8 @@ export default function AllTodosPage() {
                         <span
                           className="text-xs font-medium px-2 py-0.5 rounded"
                           style={{
-                            background: "var(--bg-elevated)",
-                            color: "var(--text-secondary)",
+                            background: getPriorityColor(todo.priority),
+                            color: "white",
                           }}
                         >
                           {getPriorityLabel(todo.priority)}
