@@ -9,7 +9,8 @@ function validate(schema) {
       req.body = schema.parse(req.body);
       next();
     } catch (err) {
-      const errors = err.errors.map((e) => `${e.path.join(".")}: ${e.message}`);
+      const issues = err.issues || err.errors || [];
+      const errors = issues.map((e) => `${(e.path || []).join(".")}: ${e.message}`);
       return ApiResponse.badRequest(res, "Validation failed", errors);
     }
   };

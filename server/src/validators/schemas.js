@@ -32,14 +32,18 @@ const updateSubtopicSchema = z.object({
   order: z.number().int().min(0).optional(),
 });
 
+// Optional ObjectId: allow null, empty string, or undefined; output null or valid string
+const optionalRef = () =>
+  z
+    .union([z.string().min(1), z.literal(""), z.null(), z.undefined()])
+    .transform((v) => (v && v !== "" ? v : null))
+    .optional()
+    .default(null);
+
 const createQuestionSchema = z.object({
   languageId: z.string().min(1, "Language ID is required"),
-  topicId: z
-    .union([z.string().min(1), z.literal(""), z.null()])
-    .optional()
-    .transform((v) => (!v ? null : v))
-    .default(null),
-  subtopicId: z.string().nullable().optional().default(null),
+  topicId: optionalRef(),
+  subtopicId: optionalRef(),
   title: z.string().min(1, "Title is required").max(500),
   questionText: z.string().min(1, "Question text is required"),
   answerText: z.string().optional().default(""),

@@ -20,9 +20,10 @@ function errorHandler(err, req, res, next) {
     return ApiResponse.badRequest(res, `Invalid ${err.path}: ${err.value}`);
   }
 
-  // Zod validation error
+  // Zod validation error (Zod 3 uses .issues)
   if (err.name === "ZodError") {
-    const errors = err.errors.map((e) => `${e.path.join(".")}: ${e.message}`);
+    const issues = err.issues || err.errors || [];
+    const errors = issues.map((e) => `${(e.path || []).join(".")}: ${e.message}`);
     return ApiResponse.badRequest(res, "Validation failed", errors);
   }
 
