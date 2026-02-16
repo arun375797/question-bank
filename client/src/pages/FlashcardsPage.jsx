@@ -79,21 +79,21 @@ export default function FlashcardsPage() {
   };
 
   return (
-    <div className="page-container">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6">
-        <div>
+    <div className="page-container min-w-0">
+      <div className="flex flex-col gap-4 mb-6">
+        <div className="min-w-0">
           <h1
-            className="text-2xl font-bold flex items-center gap-2"
+            className="text-xl sm:text-2xl font-bold flex items-center gap-2"
             style={{ color: "var(--text-primary)" }}
           >
-            <Layers size={28} style={{ color: "var(--accent)" }} />
+            <Layers size={28} className="shrink-0" style={{ color: "var(--accent)" }} />
             Flashcards
           </h1>
           <p className="mt-1 text-sm" style={{ color: "var(--text-muted)" }}>
             Create and review flashcards. Filter by subject or change card color.
           </p>
         </div>
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-3 min-w-0">
           <SubjectFilter
             subjects={subjects}
             value={subjectFilter}
@@ -102,21 +102,21 @@ export default function FlashcardsPage() {
           <button
             type="button"
             onClick={openCreate}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90 shadow-md"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl font-medium text-white transition-all hover:opacity-90 shadow-md shrink-0 w-full sm:w-auto"
             style={{ background: "var(--accent)" }}
           >
-            <Plus size={18} />
-            Create flashcard
+            <Plus size={18} className="shrink-0" />
+            <span className="truncate">Create flashcard</span>
           </button>
         </div>
       </div>
 
       {isLoading ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div
               key={i}
-              className="rounded-xl border p-5 h-40 animate-pulse"
+              className="rounded-xl border p-5 h-40 animate-pulse min-w-0"
               style={{
                 background: "var(--bg-card)",
                 borderColor: "var(--border)",
@@ -126,7 +126,7 @@ export default function FlashcardsPage() {
         </div>
       ) : filteredCards.length === 0 ? (
         <div
-          className="rounded-2xl border-2 border-dashed p-12 text-center"
+          className="rounded-2xl border-2 border-dashed p-6 sm:p-12 text-center min-w-0"
           style={{
             borderColor: "var(--border)",
             background: "var(--bg-elevated)",
@@ -154,7 +154,7 @@ export default function FlashcardsPage() {
           )}
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 min-w-0">
           <AnimatePresence mode="popLayout">
             {filteredCards.map((card) => (
               <FlashcardItem
@@ -213,19 +213,19 @@ function SubjectFilter({ subjects, value, onChange }) {
   const [open, setOpen] = useState(false);
   const display = !value || value === "all" ? "All subjects" : value;
   return (
-    <div className="relative">
+    <div className="relative w-full sm:w-auto sm:min-w-[140px] min-w-0">
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium min-w-[140px] justify-between"
+        className="w-full sm:w-auto inline-flex items-center gap-2 px-3 py-2.5 rounded-xl border text-sm font-medium justify-between min-w-0"
         style={{
           borderColor: "var(--border)",
           background: "var(--bg-card)",
           color: "var(--text-primary)",
         }}
       >
-        <span className="truncate">{display}</span>
-        <ChevronDown size={16} className={open ? "rotate-180" : ""} style={{ color: "var(--text-muted)" }} />
+        <span className="truncate min-w-0">{display}</span>
+        <ChevronDown size={16} className={`shrink-0 ${open ? "rotate-180" : ""}`} style={{ color: "var(--text-muted)" }} />
       </button>
       <AnimatePresence>
         {open && (
@@ -284,7 +284,7 @@ function FlashcardItem({ card, isFlipped, onFlip, onEdit, onDelete, onColorChang
       initial={{ opacity: 0, scale: 0.96 }}
       animate={{ opacity: 1, scale: 1 }}
       exit={{ opacity: 0, scale: 0.96 }}
-      className="relative rounded-xl border overflow-hidden group"
+      className="relative rounded-xl border overflow-hidden group min-w-0"
       style={{
         background: "var(--bg-card)",
         borderColor: "var(--border)",
@@ -452,7 +452,7 @@ function FlashcardModal({
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-full max-w-md max-h-[90vh] overflow-y-auto rounded-2xl border shadow-xl"
+        className="fixed left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 z-50 w-[calc(100%-2rem)] max-w-md max-h-[85vh] sm:max-h-[90vh] overflow-y-auto rounded-2xl border shadow-xl"
         style={{
           background: "var(--bg-card)",
           borderColor: "var(--border)",
