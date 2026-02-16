@@ -844,7 +844,7 @@ function QuestionsTab() {
   const openCreate = () => {
     setForm({
       languageId: effectiveLangId,
-      topicId: topics[0]?._id || "",
+      topicId: "",
       subtopicId: "",
       title: "",
       questionText: "",
@@ -853,7 +853,7 @@ function QuestionsTab() {
       type: "Theory",
       tags: "",
     });
-    setFormTopicId(topics[0]?._id || "");
+    setFormTopicId("");
     setModal({ open: true, item: null });
   };
 

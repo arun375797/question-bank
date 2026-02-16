@@ -50,8 +50,14 @@ const createQuestionSchema = z.object({
 
 const updateQuestionSchema = z.object({
   questionNumber: z.coerce.number().int().min(1, "Question number must be at least 1").optional(),
-  topicId: z.string().optional(),
-  subtopicId: z.string().nullable().optional(),
+  topicId: z
+    .union([z.string().min(1), z.literal(""), z.null()])
+    .optional()
+    .transform((v) => (v === undefined ? undefined : !v ? null : v)),
+  subtopicId: z
+    .union([z.string().min(1), z.literal(""), z.null()])
+    .optional()
+    .transform((v) => (v === undefined ? undefined : !v ? null : v)),
   title: z.string().min(1).max(500).optional(),
   questionText: z.string().min(1).optional(),
   answerText: z.string().optional(),
