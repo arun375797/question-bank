@@ -23,6 +23,7 @@ import InstallAppPage from "./pages/todo/InstallAppPage";
 import ReviseTodayPage from "./pages/todo/ReviseTodayPage";
 import RevisionLibraryPage from "./pages/todo/RevisionLibraryPage";
 import RevisionSessionPage from "./pages/todo/RevisionSessionPage";
+import FlashcardsPage from "./pages/FlashcardsPage";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +66,7 @@ function AppContent() {
         <Route path="/manage" element={<ManagePage />} />
         <Route path="/overview" element={<OverviewPage />} />
         <Route path="/notebook" element={<NotebookPage />} />
+        <Route path="/flashcards" element={<FlashcardsPage />} />
         <Route path="/settings" element={<SettingsPage />} />
         <Route path="/todo" element={<TodoDashboardPage />} />
         <Route path="/todo/list" element={<AllTodosPage />} />

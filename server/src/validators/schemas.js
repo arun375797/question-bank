@@ -169,6 +169,21 @@ const snoozeRevisionSchema = z.object({
   option: z.enum(["1d", "3d", "7d"]),
 });
 
+// Flashcards
+const createFlashcardSchema = z.object({
+  front: z.string().min(1, "Front is required").max(2000),
+  back: z.string().min(1, "Back is required").max(2000),
+  subject: z.string().max(100).optional().default("General"),
+  color: z.string().max(20).optional().default("#6366f1"),
+});
+
+const updateFlashcardSchema = z.object({
+  front: z.string().min(1).max(2000).optional(),
+  back: z.string().min(1).max(2000).optional(),
+  subject: z.string().max(100).optional(),
+  color: z.string().max(20).optional(),
+});
+
 module.exports = {
   createLanguageSchema,
   updateLanguageSchema,
@@ -188,4 +203,6 @@ module.exports = {
   updateRevisionSchema,
   markRevisedSchema,
   snoozeRevisionSchema,
+  createFlashcardSchema,
+  updateFlashcardSchema,
 };

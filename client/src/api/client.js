@@ -109,4 +109,12 @@ export const revisionApi = {
     api.post(`/todo/revisions/${id}/snooze`, { option }).then((r) => r.data),
 };
 
+// Flashcards
+export const flashcardsApi = {
+  getAll: (params) => api.get("/flashcards", { params }).then((r) => r.data),
+  create: (data) => api.post("/flashcards", data).then((r) => r.data),
+  update: (id, data) => api.put(`/flashcards/${id}`, data).then((r) => r.data),
+  delete: (id) => api.delete(`/flashcards/${id}`).then((r) => r.data),
+};
+
 export default api;

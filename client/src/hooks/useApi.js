@@ -4,6 +4,7 @@ import {
   topicsApi,
   subtopicsApi,
   questionsApi,
+  flashcardsApi,
 } from "../api/client";
 
 // ─── Languages ───
@@ -174,5 +175,37 @@ export function useBulkQuestionAction() {
       qc.invalidateQueries({ queryKey: ["questions"] });
       qc.invalidateQueries({ queryKey: ["languages"] });
     },
+  });
+}
+
+// ─── Flashcards ───
+export function useFlashcards(subject) {
+  return useQuery({
+    queryKey: ["flashcards", subject ?? "all"],
+    queryFn: () => flashcardsApi.getAll(subject ? { subject } : {}),
+  });
+}
+
+export function useCreateFlashcard() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: flashcardsApi.create,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["flashcards"] }),
+  });
+}
+
+export function useUpdateFlashcard() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }) => flashcardsApi.update(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["flashcards"] }),
+  });
+}
+
+export function useDeleteFlashcard() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: flashcardsApi.delete,
+    onSuccess: () => qc.invalidateQueries({ queryKey: ["flashcards"] }),
   });
 }

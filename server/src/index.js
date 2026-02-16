@@ -12,6 +12,7 @@ const topicRoutes = require("./routes/topic.routes");
 const subtopicRoutes = require("./routes/subtopic.routes");
 const questionRoutes = require("./routes/question.routes");
 const todoRoutes = require("./routes/todo.routes");
+const flashcardRoutes = require("./routes/flashcard.routes");
 const { errorHandler, notFoundHandler } = require("./middlewares/errorHandler");
 
 const app = express();
@@ -42,6 +43,7 @@ app.use("/api/topics", authMiddleware, topicRoutes);
 app.use("/api/subtopics", authMiddleware, subtopicRoutes);
 app.use("/api/questions", authMiddleware, questionRoutes);
 app.use("/api/todo", authMiddleware, todoRoutes);
+app.use("/api/flashcards", authMiddleware, flashcardRoutes);
 
 // Error handling
 app.use(notFoundHandler);

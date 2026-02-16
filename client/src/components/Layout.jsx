@@ -22,12 +22,14 @@ import {
   Download,
   BookMarked,
   Library,
+  Layers,
 } from "lucide-react";
 
 const navLinks = [
   { to: "/", label: "Home", icon: Home },
   { to: "/study", label: "Study", icon: BookOpen },
   { to: "/notebook", label: "Notebook", icon: BookText },
+  { to: "/flashcards", label: "Flashcards", icon: Layers },
   { to: "/overview", label: "Overview", icon: LayoutList },
   { to: "/manage", label: "Manage", icon: Wrench },
   { to: "/settings", label: "Settings", icon: Settings },
@@ -48,6 +50,7 @@ const todoNavLinks = [
 const mobileNavLinks = [
   { to: "/", label: "Home", icon: Home },
   { to: "/study", label: "Study", icon: BookOpen },
+  { to: "/flashcards", label: "Cards", icon: Layers },
   { to: "/todo", label: "TODO", icon: ListTodo },
   { to: "/manage", label: "Manage", icon: Wrench },
   { to: "/settings", label: "Settings", icon: Settings },
